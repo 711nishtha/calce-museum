@@ -8,11 +8,11 @@ import { buildCollider, moveWithCollision } from "@/architecture/collision";
 import { EYE_HEIGHT, SPAWN, roomAt } from "@/architecture/floorplan";
 import { touchInput, useMuseum, type CameraTarget } from "../state/museumStore";
 
-const WALK = 1.7; // m/s — an unhurried gallery pace
-const BRISK = 3.2;
-const TURN = 1.7; // rad/s for keyboard turning
+const WALK = 3.6; // m/s — a comfortable stroll for a virtual space (real rooms feel smaller on screen)
+const BRISK = 6.5;
+const TURN = 2.5; // rad/s for keyboard turning
 const MOUSE = 0.0021;
-const TOUCH_LOOK = 0.0042;
+const TOUCH_LOOK = 0.005;
 const PITCH_LIMIT = 1.3;
 
 const MOVE_KEYS = new Set(["KeyW", "KeyA", "KeyS", "KeyD", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "ShiftLeft", "ShiftRight"]);
@@ -95,7 +95,7 @@ export function Player() {
     store.setTravelling(true);
     keys.current.clear();
     const sameRoom = roomAt(from.x, from.z)?.id === roomAt(to.x, to.z)?.id;
-    const duration = t.duration ?? (sameRoom ? Math.min(2.4, 0.8 + from.distanceTo(to) * 0.18) : 0);
+    const duration = t.duration ?? (sameRoom ? Math.min(1.3, 0.45 + from.distanceTo(to) * 0.07) : 0);
 
     if (reduced || duration === 0) {
       // Different rooms: fade through ivory rather than gliding through walls.
@@ -107,9 +107,9 @@ export function Player() {
       };
       if (!veil || reduced) return jump();
       gsap.timeline()
-        .to(veil, { opacity: 1, duration: 0.45, ease: "power2.in" })
+        .to(veil, { opacity: 1, duration: 0.22, ease: "power2.in" })
         .add(jump)
-        .to(veil, { opacity: 0, duration: 0.7, ease: "power2.out", delay: 0.15 });
+        .to(veil, { opacity: 0, duration: 0.4, ease: "power2.out", delay: 0.05 });
       return;
     }
     const startQ = camera.quaternion.clone();
@@ -177,7 +177,7 @@ export function Player() {
     const cos = Math.cos(yaw.current);
     const wantX = (-sin * fwd + cos * side) * speed;
     const wantZ = (-cos * fwd - sin * side) * speed;
-    const ease = 1 - Math.exp(-dt * 9);
+    const ease = 1 - Math.exp(-dt * 12);
     vel.current.x += (wantX - vel.current.x) * ease;
     vel.current.y += (wantZ - vel.current.y) * ease;
 
@@ -186,7 +186,7 @@ export function Player() {
     walked.current += moved;
     camera.position.x = nx;
     camera.position.z = nz;
-    const bob = reduced ? 0 : Math.sin(walked.current * 5.2) * 0.012 * Math.min(1, moved / (dt * WALK + 1e-6));
+    const bob = reduced ? 0 : Math.sin(walked.current * 3.4) * 0.01 * Math.min(1, moved / (dt * WALK + 1e-6));
     camera.position.y = EYE_HEIGHT + bob;
 
     s.setRoom(roomAt(nx, nz)?.id ?? null);

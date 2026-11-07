@@ -129,7 +129,7 @@ export function MuseumExperience() {
           }
         });
       }
-    } else st.goTo({ position: SPAWN.position, lookAt: [0, 3, 23], duration: 1.6 });
+    } else st.goTo({ position: SPAWN.position, lookAt: [0, 3, 23], duration: 0.9 });
     lockIfDesktop();
   };
 
