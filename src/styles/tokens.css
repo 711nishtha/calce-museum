@@ -1,0 +1,88 @@
+/*
+ * CALCE design tokens. Mirrored in src/lib/brand.ts for SVG and 3D.
+ * Contrast pairs are verified in tests/brand.test.ts.
+ */
+:root {
+  /* Core palette */
+  --limestone: #e8dfce;
+  --sand: #c8b69a;
+  --terracotta: #a75f40;
+  --olive: #777c58;
+  --walnut: #674b3a;
+  --ivory: #f5f0e7;
+
+  /* Supporting */
+  --ink: #2a211b;
+  --ink-soft: #5c4e44;
+  --terracotta-deep: #8c4a2f;
+  --olive-deep: #585c3e;
+  --plaster: #efe8db;
+  --line: #d6cbb8;
+  --prussian: #2e4560;
+  --night: #1c1713;
+
+  /* Semantic */
+  --bg: var(--ivory);
+  --bg-raised: var(--plaster);
+  --bg-stone: var(--limestone);
+  --text: var(--ink);
+  --text-soft: var(--ink-soft);
+  --accent: var(--terracotta);
+  --link: var(--terracotta-deep);
+  --focus: #1f5f8b;
+  --danger: #9b2c1f;
+  --success: var(--olive-deep);
+
+  /* Type */
+  --font-display-stack: var(--font-display), "Iowan Old Style", Georgia, serif;
+  --font-text-stack: var(--font-text), "Helvetica Neue", Arial, sans-serif;
+  --step--2: clamp(0.72rem, 0.7rem + 0.1vw, 0.78rem);
+  --step--1: clamp(0.84rem, 0.82rem + 0.1vw, 0.9rem);
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+  --step-1: clamp(1.2rem, 1.13rem + 0.35vw, 1.4rem);
+  --step-2: clamp(1.45rem, 1.3rem + 0.7vw, 1.85rem);
+  --step-3: clamp(1.8rem, 1.5rem + 1.4vw, 2.6rem);
+  --step-4: clamp(2.3rem, 1.8rem + 2.4vw, 3.8rem);
+  --step-5: clamp(2.9rem, 2rem + 4.4vw, 6rem);
+  --step-6: clamp(3.4rem, 2rem + 7vw, 8.6rem);
+  --leading-tight: 1.04;
+  --leading-snug: 1.25;
+  --leading-body: 1.6;
+  --tracking-label: 0.14em;
+
+  /* Space (4 px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --space-9: 6.5rem;
+  --space-10: 9rem;
+
+  /* Grid */
+  --page-max: 1440px;
+  --gutter: clamp(16px, 2vw, 32px);
+  --margin: clamp(16px, 5vw, 88px);
+  --measure: 62ch;
+
+  /* Shape & motion */
+  --radius-s: 2px;
+  --radius-m: 4px;
+  --arch: 9999px 9999px 0 0;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-1: 160ms;
+  --dur-2: 320ms;
+  --dur-3: 700ms;
+  --shadow-soft: 0 1px 2px rgb(42 33 27 / 6%), 0 12px 32px -12px rgb(42 33 27 / 22%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-1: 0ms;
+    --dur-2: 0ms;
+    --dur-3: 0ms;
+  }
+}
