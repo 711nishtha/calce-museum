@@ -1,5 +1,5 @@
 /** Registry of downloadable identity assets, served from /media/identity/[id]. */
-import { exhibitions } from "@/content/exhibitions";
+import { originalExhibitions as exhibitions } from "@/content/exhibitions";
 import { products } from "@/content/shop";
 import { atriumWayfinding, brochureSvg, catalogueSvg, gallerySignSvg, logoSvg, posterSvg, socialSvg, ticketSvg, wayfindingSvg } from "./identity";
 import { mapSvg } from "./map-svg";

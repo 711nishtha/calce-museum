@@ -1,7 +1,8 @@
+import { masters } from "./masters";
 import type { Artist } from "./types";
 
-/** All artists are fictional. Any resemblance to living practitioners is unintended. */
-export const artists: Artist[] = [
+/** Contemporary artists are fictional. Any resemblance to living practitioners is unintended. */
+export const contemporaryArtists: Artist[] = [
   {
     id: "ilaria-vensano",
     name: "Ilaria Vensano",
@@ -159,6 +160,9 @@ export const artists: Artist[] = [
     quote: "A line of light is a sentence the sun writes once a day.",
   },
 ];
+
+/** Every artist: the fictional contemporaries, then the historical masters shown in reproduction. */
+export const artists: Artist[] = [...contemporaryArtists, ...masters];
 
 export function getArtist(id: string): Artist | undefined {
   return artists.find((a) => a.id === id);

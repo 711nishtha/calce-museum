@@ -9,7 +9,7 @@ export function ArtworkImage({ work, className, priority = false }: { work: Artw
   const artist = getArtist(work.artistId);
   return (
     <img
-      src={artworkUrl(work.id)}
+      src={artworkUrl(work)}
       width={w}
       height={h}
       alt={`${work.title} by ${artist?.name ?? "unknown artist"}, ${work.year}. ${work.materials}.`}

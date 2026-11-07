@@ -94,7 +94,7 @@ function Form({ form, work }: { form: SculptureForm; work: Artwork }) {
   }, [form, w, h, d]);
 
   if (form === "stack") {
-    const r = rng(v.seed);
+    const r = rng(v.kind === "sculpture" ? v.seed : 1);
     const n = r.int(5, 7);
     let y = 0;
     const blocks = Array.from({ length: n }, (_, i) => {

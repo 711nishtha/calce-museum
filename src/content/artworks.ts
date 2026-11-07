@@ -1,3 +1,4 @@
+import { reproductions } from "./reproductions";
 import type { Artwork } from "./types";
 
 /**
@@ -5,7 +6,7 @@ import type { Artwork } from "./types";
  * generated SVG image on the website and the texture or geometry in the 3D museum.
  * `placement` positions it in the floor plan (metres, see src/architecture/floorplan.ts).
  */
-export const artworks: Artwork[] = [
+const originals: Artwork[] = [
   // ——— 01 The Weight of Stillness — Gallery I (east) ———
   {
     id: "seven-afternoons",
@@ -511,6 +512,9 @@ export const artworks: Artwork[] = [
     placement: { type: "floor", room: "garden", x: 27, z: 12.5 },
   },
 ];
+
+/** All works: the original fictional works, then the reproductions in Gallery V. */
+export const artworks: Artwork[] = [...originals, ...reproductions];
 
 export function getArtwork(id: string): Artwork | undefined {
   return artworks.find((a) => a.id === id);

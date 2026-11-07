@@ -407,6 +407,9 @@ export function renderVisual(visual: ArtworkVisual, w: number, h: number): strin
       return sculpture(visual.form, visual.material, visual.seed, w, h);
     case "installation":
       return installation(visual.form, visual.seed, w, h);
+    case "image":
+      // Reproductions are photographs served from /public/paintings; this frame only references them.
+      return svg(w, h, "", `<image href="/paintings/${visual.file}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`);
   }
 }
 

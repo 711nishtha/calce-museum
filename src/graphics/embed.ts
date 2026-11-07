@@ -33,7 +33,7 @@ export function linked<T>(render: () => T): T {
 
 /** Place an artwork image inside another SVG at x,y,w,h, cropped to fill. */
 export function embedArtwork(work: Artwork, x: number, y: number, w: number, h: number, prefix: string): string {
-  if (mode === "link") return `<image href="${artworkUrl(work.id)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`;
+  if (mode === "link") return `<image href="${artworkUrl(work)}" x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"/>`;
   return namespaceIds(artworkSvg(work), prefix).replace(
     /^<svg xmlns="http:\/\/www.w3.org\/2000\/svg" width="\d+" height="\d+"/,
     `<svg x="${x}" y="${y}" width="${w}" height="${h}" preserveAspectRatio="xMidYMid slice"`,

@@ -4,7 +4,7 @@
  * downloaded and opened on its own. Print assets use millimetre viewBoxes.
  */
 import { artworksByExhibition } from "@/content/artworks";
-import { exhibitions } from "@/content/exhibitions";
+import { originalExhibitions as exhibitions } from "@/content/exhibitions";
 import type { Exhibition } from "@/content/types";
 import { hours, museum } from "@/content/visit";
 import { fonts, palette, support } from "@/lib/brand";
@@ -249,6 +249,7 @@ export function wayfindingSvg(entries: WayfindingEntry[], title = "Atrium"): str
 export const atriumWayfinding: WayfindingEntry[] = [
   { label: "Sculpture", detail: "Gallery I", dir: "right" },
   { label: "Painting", detail: "Gallery II", dir: "left" },
+  { label: "Royal Salon", detail: "Gallery V · via II", dir: "left" },
   { label: "Photography", detail: "Gallery III", dir: "ahead" },
   { label: "Installation", detail: "Gallery IV · via III", dir: "ahead" },
   { label: "Café, Shop & Exit", detail: "Reception", dir: "back" },

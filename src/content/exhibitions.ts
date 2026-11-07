@@ -73,6 +73,25 @@ export const exhibitions: Exhibition[] = [
     ],
     layout: "Four installations across the Long Room and a darkened side chamber; low light throughout.",
   },
+  {
+    id: "royal-salon",
+    number: "05",
+    title: "The Royal Salon",
+    subtitle: "Portraits of power and myths of Greece, in reproduction",
+    medium: "painting",
+    room: "gallery-royal",
+    opens: "2026-11-07",
+    closes: "2027-12-31",
+    curator: "Omar Haddane",
+    accent: "#7A2A2C",
+    reproductions: true,
+    statement: [
+      "Gallery V is a temple-fronted hall in the manner of the great picture galleries of Europe: an Ionic colonnade, a coffered ceiling, oxblood damask above walnut panelling, and a floor of black and white marble. It is hung with twelve of the most studied paintings in the Western tradition — every one of them a reproduction.",
+      "The originals belong to the Prado, the Louvre, the National Gallery, the Uffizi, the Vatican and other collections, and none could ever be lent together. Seen side by side here, they ask how power and myth have been staged in paint: kings who dismount to look like gentlemen, a queen who must look like a queen, philosophers arguing beneath imagined vaults, and gods arriving from the sea.",
+      "All images are reproductions of public-domain works, courtesy of Wikimedia Commons, and are credited to the collections that hold the originals.",
+    ],
+    layout: "Twelve reproductions in gilded frames along two aisles and the north wall, behind an Ionic colonnade; a velvet ottoman at the centre of the nave.",
+  },
 ];
 
 export const upcoming: UpcomingExhibition[] = [
@@ -93,6 +112,9 @@ export const upcoming: UpcomingExhibition[] = [
     teaser: "Twelve ceramicists rethink the oldest building material in the region, from cooling façades to vessels made of reclaimed brick.",
   },
 ];
+
+/** Exhibitions of original works; print identity (posters, signs, brochure) covers these. */
+export const originalExhibitions = exhibitions.filter((e) => !e.reproductions);
 
 export function getExhibition(id: string): Exhibition | undefined {
   return exhibitions.find((e) => e.id === id);

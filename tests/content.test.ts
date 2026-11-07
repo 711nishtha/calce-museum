@@ -45,7 +45,9 @@ describe("content integrity", () => {
     for (const a of artists) {
       expect(artworks.some((w) => w.artistId === a.id), a.id).toBe(true);
       expect(a.bio.length).toBeGreaterThanOrEqual(2);
-      expect(a.quote.length).toBeGreaterThan(10);
+      // fictional contemporaries carry a quote; historical masters are never given invented ones
+      if (a.died) expect(a.quote).toBeUndefined();
+      else expect(a.quote?.length ?? 0).toBeGreaterThan(10);
     }
   });
 
@@ -69,8 +71,8 @@ describe("content integrity", () => {
 });
 
 describe("generated imagery", () => {
-  it("renders a well-formed, deterministic SVG for every artwork", () => {
-    for (const w of artworks) {
+  it("renders a well-formed, deterministic SVG for every original artwork", () => {
+    for (const w of artworks.filter((a) => a.visual.kind !== "image")) {
       const a = artworkSvg(w);
       expect(a.startsWith("<svg"), w.id).toBe(true);
       expect(a.endsWith("</svg>"), w.id).toBe(true);
@@ -85,6 +87,23 @@ describe("generated imagery", () => {
       const s = asset.render();
       expect(s.startsWith("<svg"), asset.id).toBe(true);
       expect(s).not.toMatch(/NaN|undefined/);
+    }
+  });
+});
+
+describe("reproductions", () => {
+  it("credits every reproduction and ships its image", async () => {
+    const { existsSync } = await import("node:fs");
+    const repro = artworks.filter((a) => a.visual.kind === "image");
+    expect(repro.length).toBeGreaterThanOrEqual(12);
+    for (const w of repro) {
+      if (w.visual.kind !== "image") continue;
+      expect(existsSync(`public/paintings/${w.visual.file}`), w.id).toBe(true);
+      expect(w.visual.source, w.id).toMatch(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
+      expect(w.visual.holder.length, w.id).toBeGreaterThan(3);
+      expect(w.materials, w.id).toMatch(/reproduction/);
+      expect(exhibitions.find((e) => e.id === w.exhibitionId)?.reproductions, w.id).toBe(true);
+      expect(getArtist(w.artistId)?.died, w.id).toBeDefined();
     }
   });
 });

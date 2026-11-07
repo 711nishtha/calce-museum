@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import * as THREE from "three";
 import { useMuseum } from "../state/museumStore";
+import type { Artwork } from "@/content/types";
 import { artworkUrl } from "@/lib/paths";
 
 const loader = new THREE.TextureLoader();
@@ -19,7 +20,8 @@ function report() {
  * Returns null while loading or if loading fails, so callers can show the bare
  * support (canvas, mat) instead of a broken image.
  */
-export function useArtworkTexture(id: string, maxAnisotropy = 8): THREE.Texture | null {
+export function useArtworkTexture(work: Artwork, maxAnisotropy = 8): THREE.Texture | null {
+  const id = work.id;
   const [tex, setTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {
     let alive = true;
@@ -27,7 +29,7 @@ export function useArtworkTexture(id: string, maxAnisotropy = 8): THREE.Texture 
     if (!p) {
       progress.requested++;
       report();
-      p = loader.loadAsync(artworkUrl(id)).then((t) => {
+      p = loader.loadAsync(artworkUrl(work)).then((t) => {
         t.colorSpace = THREE.SRGBColorSpace;
         t.anisotropy = maxAnisotropy;
         t.generateMipmaps = true;
@@ -43,6 +45,7 @@ export function useArtworkTexture(id: string, maxAnisotropy = 8): THREE.Texture 
     return () => {
       alive = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the work is identified by its id
   }, [id, maxAnisotropy]);
   return tex;
 }

@@ -20,7 +20,9 @@ export type RoomId =
   | "gallery-sculpture"
   | "gallery-painting"
   | "gallery-photography"
-  | "gallery-installation";
+  | "gallery-installation"
+  | "passage-royal"
+  | "gallery-royal";
 
 /** Direction an artwork's face points towards (its surface normal), in plan. */
 export type Facing = "north" | "south" | "east" | "west";
@@ -41,7 +43,9 @@ export type ArtworkVisual =
   | { kind: "painting"; style: PaintingStyle; palette: string[]; seed: number }
   | { kind: "photo"; process: PhotoProcess; motif: PhotoMotif; seed: number }
   | { kind: "sculpture"; form: SculptureForm; material: SculptureMaterial; seed: number }
-  | { kind: "installation"; form: InstallationForm; seed: number };
+  | { kind: "installation"; form: InstallationForm; seed: number }
+  /** A photographic reproduction of a public-domain work, stored in /public/paintings. */
+  | { kind: "image"; file: string; holder: string; source: string };
 
 export interface Dimensions {
   /** centimetres */
@@ -57,6 +61,8 @@ export interface Artwork {
   /** null for permanent-collection works shown outside a temporary exhibition */
   exhibitionId: string | null;
   year: number;
+  /** shown instead of the year when a date is approximate or a range, e.g. "c. 1503–19" */
+  dateLabel?: string;
   medium: Medium;
   materials: string;
   dimensions: Dimensions;
@@ -76,7 +82,10 @@ export interface Artist {
   basedIn: string;
   practice: string;
   bio: string[];
-  quote: string;
+  /** fictional contemporary artists only; historical masters are not given invented quotes */
+  quote?: string;
+  /** set for historical artists */
+  died?: number;
 }
 
 export interface Exhibition {
@@ -93,6 +102,8 @@ export interface Exhibition {
   statement: string[];
   layout: string;
   number: string; // "01", "02" … used in signage and posters
+  /** shows reproductions of public-domain works rather than original fictional works */
+  reproductions?: boolean;
 }
 
 export interface UpcomingExhibition {

@@ -1,6 +1,6 @@
 import type { TourStop } from "./types";
 
-/** The guided tour: a 13-stop route from the forecourt to the darkened chamber. */
+/** The guided tour: a route from the forecourt, through the Royal Salon, to the darkened chamber. */
 export const tourStops: TourStop[] = [
   {
     id: "arrival",
@@ -70,6 +70,24 @@ export const tourStops: TourStop[] = [
     target: [-20, 1.6, -7.78],
     artworkId: "arch-at-four",
     narration: "Yusuf Kalender paints a single hour. Here, the shadow of a courtyard arch at four in the afternoon is the only dark colour in the painting. On the central partition behind you, a morning arch hangs back to back with an afternoon wall.",
+  },
+  {
+    id: "royal-salon",
+    title: "The Royal Salon",
+    room: "gallery-royal",
+    position: [-21, 1.62, -12.6],
+    target: [-21, 3.4, -31.78],
+    artworkId: "school-of-athens",
+    narration: "Through the passage from Gallery II lies the Royal Salon: an Ionic colonnade, a coffered ceiling, oxblood damask and a floor of black and white marble. At the end of the nave hangs Raphael’s School of Athens. Everything in this room is a reproduction — the originals belong to the great collections of Europe and America and could never hang together.",
+  },
+  {
+    id: "las-meninas",
+    title: "Las Meninas",
+    room: "gallery-royal",
+    position: [-27.3, 1.62, -20.75],
+    target: [-30.78, 2.5, -20.75],
+    artworkId: "las-meninas",
+    narration: "Velázquez paints the Infanta, her maids of honour — and himself, at work on a canvas we cannot see. In the mirror at the back are the king and queen, standing where you stand now. Across the nave, Holbein’s Ambassadors hides a skull you can only read from the side.",
   },
   {
     id: "wild-fennel",
