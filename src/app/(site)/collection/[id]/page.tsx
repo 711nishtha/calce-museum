@@ -65,13 +65,29 @@ export default async function ArtworkPage({ params }: { params: Promise<{ id: st
               </div>
               <dl className="meta">
                 <dt>Date</dt>
-                <dd>{work.year}</dd>
+                <dd>{work.dateLabel ?? work.year}</dd>
                 <dt>Medium</dt>
                 <dd>{work.materials}</dd>
-                <dt>Dimensions</dt>
+                <dt>{work.visual.kind === "image" ? "Original size" : "Dimensions"}</dt>
                 <dd>{dims(work.dimensions)}</dd>
-                <dt>{work.exhibitionId ? "Loan" : "Accession"}</dt>
-                <dd>{work.exhibitionId ? `${work.accession} · courtesy the artist` : work.accession}</dd>
+                {work.visual.kind === "image" ? (
+                  <>
+                    <dt>Original</dt>
+                    <dd>{work.visual.holder}</dd>
+                    <dt>Image</dt>
+                    <dd>
+                      <a href={work.visual.source} target="_blank" rel="noopener noreferrer">
+                        Wikimedia Commons
+                      </a>{" "}
+                      · public domain
+                    </dd>
+                  </>
+                ) : (
+                  <>
+                    <dt>{work.exhibitionId ? "Loan" : "Accession"}</dt>
+                    <dd>{work.exhibitionId ? `${work.accession} · courtesy the artist` : work.accession}</dd>
+                  </>
+                )}
                 <dt>On view</dt>
                 <dd>{room ? room.name : "In storage"}</dd>
               </dl>

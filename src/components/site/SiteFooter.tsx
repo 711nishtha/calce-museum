@@ -54,7 +54,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="site-footer__base">
-          <p style={{ margin: 0 }}>CALCE is a fictional museum. All artists, artworks and texts are original works of fiction.</p>
+          <p style={{ margin: 0 }}>CALCE is a fictional museum. Its contemporary artists, works and texts are original fiction; Gallery V shows credited reproductions of public-domain paintings.</p>
           <p style={{ margin: 0 }}>Ticket booking on this site is a demonstration — no payment is taken.</p>
         </div>
       </div>

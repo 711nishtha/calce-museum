@@ -8,6 +8,7 @@ import { artists } from "@/content/artists";
 import { artworks, artworksByArtist, artworksByExhibition, getArtwork } from "@/content/artworks";
 import { exhibitions, upcoming } from "@/content/exhibitions";
 import { articles } from "@/content/journal";
+import { tourStops } from "@/content/tour";
 import { gettingHere, museum } from "@/content/visit";
 import { getArtist } from "@/content/artists";
 import { heroSvg } from "@/graphics/hero-svg";
@@ -126,7 +127,7 @@ export default function HomePage() {
               Walk the building at a human pace
             </h2>
             <p className="mt-6" style={{ maxWidth: "48ch" }}>
-              A real-time model of CALCE, hung with the same {artworks.length} works in the same places. Walk from the olive forecourt through the atrium into every gallery, stop at any work to read about it, or follow the thirteen-stop guided tour.
+              A real-time model of CALCE, hung with the same {artworks.length} works in the same places. Walk from the olive forecourt through the atrium into every gallery, stop at any work to read about it, or follow the {tourStops.length}-stop guided tour.
             </p>
             <div className="btn-row mt-6">
               <Link href="/museum" className="btn btn--light">
@@ -141,7 +142,7 @@ export default function HomePage() {
             </p>
           </div>
           <figure className="map-figure">
-            <InlineSvg svg={mapSvg({ tour: true, background: "#EFE8DB" })} label="Plan of CALCE with the guided tour route marked in thirteen numbered stops." />
+            <InlineSvg svg={mapSvg({ tour: true, background: "#EFE8DB" })} label={`Plan of CALCE with the guided tour route marked in ${tourStops.length} numbered stops.`} />
           </figure>
         </div>
       </section>

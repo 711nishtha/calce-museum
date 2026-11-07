@@ -35,10 +35,10 @@ export function ArtworkPanel({ onClose }: { onClose: () => void }) {
   return (
     <div className="m-panel m-artwork" role="dialog" aria-modal="true" aria-labelledby="m-art-title">
       <div className="m-artwork__image">
-        <img src={artworkUrl(work.id)} alt={`${work.title} by ${artist.name}`} />
+        <img src={artworkUrl(work)} alt={`${work.title} by ${artist.name}`} />
       </div>
       <div className="m-artwork__text stack">
-        <span className="eyebrow">{ex ? `Exhibition ${ex.number} · ${ex.title}` : "Permanent collection"}</span>
+        <span className="eyebrow">{ex ? `${ex.reproductions ? "Gallery V" : `Exhibition ${ex.number}`} · ${ex.title}` : "Permanent collection"}</span>
         <h2 id="m-art-title" className="h2">
           {work.title}
         </h2>
@@ -47,7 +47,7 @@ export function ArtworkPanel({ onClose }: { onClose: () => void }) {
         </p>
         <dl className="meta">
           <dt>Date</dt>
-          <dd>{work.year}</dd>
+          <dd>{work.dateLabel ?? work.year}</dd>
           <dt>Medium</dt>
           <dd>{work.materials}</dd>
           <dt>Size</dt>
@@ -66,7 +66,8 @@ export function ArtworkPanel({ onClose }: { onClose: () => void }) {
           </p>
         </div>
         <p className="small soft">
-          {artist.name} (b. {artist.born}, {artist.birthplace}) — {artist.practice.toLowerCase()}.
+          {artist.died ? `${artist.name} (${artist.born}–${artist.died})` : `${artist.name} (b. ${artist.born}, ${artist.birthplace})`} — {artist.practice.charAt(0).toLowerCase() + artist.practice.slice(1)}.
+          {work.visual.kind === "image" && <> Reproduction; original in {work.visual.holder}. Image: Wikimedia Commons, public domain.</>}
         </p>
         <div className="btn-row">
           <button ref={closeRef} type="button" className="m-btn m-btn--primary" onClick={onClose}>

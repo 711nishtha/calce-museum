@@ -8,7 +8,7 @@ import { roomById } from "@/architecture/floorplan";
 import { mapSvg } from "@/graphics/map-svg";
 import { identityAssetUrl } from "@/lib/paths";
 
-export const metadata: Metadata = { title: "Map & guided tour", description: "The plan of CALCE and a thirteen-stop guided tour through every gallery." };
+export const metadata: Metadata = { title: "Map & guided tour", description: "The plan of CALCE and a guided tour through every gallery." };
 
 export default function MapPage() {
   return (
@@ -36,7 +36,7 @@ export default function MapPage() {
               The guided tour
             </h2>
             <p className="mt-4" style={{ maxWidth: "36ch" }}>
-              Thirteen stops from the forecourt to the darkened chamber. In the building, tours leave reception at 11:00 and 15:00. Online, the 3D museum walks you from stop to stop.
+              {tourStops.length} stops from the forecourt, through the Royal Salon, to the darkened chamber. In the building, tours leave reception at 11:00 and 15:00. Online, the 3D museum walks you from stop to stop.
             </p>
             <Link href="/museum?tour=1" className="text-link mt-4">
               Start the tour in 3D

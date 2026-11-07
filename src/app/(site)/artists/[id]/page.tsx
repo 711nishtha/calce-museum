@@ -28,13 +28,14 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
     <>
       <PageHead crumbs={[{ href: "/artists", label: "Artists" }, { label: artist.name }]} eyebrow={artist.practice} title={artist.name}>
         <dl className="meta mt-6">
-          <dt>{isCollective ? "Founded" : "Born"}</dt>
+          <dt>{isCollective ? "Founded" : artist.died ? "Lived" : "Born"}</dt>
           <dd>
-            {artist.born}, {artist.birthplace}
+            {artist.died ? `${artist.born}–${artist.died}, born in ${artist.birthplace}` : `${artist.born}, ${artist.birthplace}`}
           </dd>
-          <dt>Lives and works</dt>
+          <dt>{artist.died ? "Worked in" : "Lives and works"}</dt>
           <dd>{artist.basedIn}</dd>
         </dl>
+        {artist.died && <p className="small soft mt-4">Shown at CALCE in reproduction, in Gallery V — The Royal Salon.</p>}
       </PageHead>
       <section className="section">
         <div className="container split split--wide-left">
@@ -43,9 +44,11 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
               <p key={p.slice(0, 24)}>{p}</p>
             ))}
           </div>
-          <blockquote className="quote" style={{ margin: 0 }}>
-            {artist.quote}
-          </blockquote>
+          {artist.quote && (
+            <blockquote className="quote" style={{ margin: 0 }}>
+              {artist.quote}
+            </blockquote>
+          )}
         </div>
       </section>
       <section className="section section--plaster" aria-labelledby="works">
@@ -66,7 +69,7 @@ export default async function ArtistPage({ params }: { params: Promise<{ id: str
                       <strong className="h4">{w.title}</strong>
                       {w.year} · {w.materials}
                       <br />
-                      {ex ? ex.title : "Permanent collection · Sculpture Garden"}
+                      {ex ? ex.title : "Permanent collection · Sculpture Garden"}{w.visual.kind === "image" ? ` · reproduction (${w.visual.holder})` : ""}
                     </figcaption>
                   </figure>
                 </Link>
