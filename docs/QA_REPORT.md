@@ -98,3 +98,24 @@ Live on GitHub Pages: https://711nishtha.github.io/calce-museum/ — deployed by
 `.github/workflows/deploy.yml` on every push to `main`. Verified after deploy: key pages, media,
 fonts and the 404 page return the right status and content type; the 3D museum loads all 33 works,
 follows a `?room=` deep link and logs no console errors.
+
+## Update — the Royal Salon, finishes and speed
+
+- **Gallery V — The Royal Salon** added north of Gallery II through a new arched passage: two Ionic
+  colonnades with a Greek-key entablature, a coffered ceiling with gilt rosettes and a skylit lantern,
+  oxblood damask over walnut panelling, a black-and-white marble floor, two chandeliers, a velvet ottoman
+  and a pair of amphorae. Twelve public-domain paintings hang in gilt frames as clearly labelled
+  reproductions, each credited to its holding collection and to Wikimedia Commons (downloaded with the
+  owner's approval, converted to WebP, 3.3 MB in total).
+- **Finishes throughout**: oak skirtings and stone cornices on every interior wall, moulded arch surrounds
+  with keystones (gilt on the Royal Salon side), marble pilasters and a Greek-key frieze ring in the atrium,
+  an inlaid marble star medallion around the olive tree, and brass picture lights over every painting.
+- **Speed**: walking 1.7 → 3.6 m/s (Shift 6.5), keyboard turning 1.7 → 2.5 rad/s, quicker glides and fades.
+- **Tests**: walkability, placement and viewpoint tests cover the new rooms; a new test checks that every
+  reproduction ships its image, is credited and carries the reproduction label. 38/38 pass.
+- **Performance** (production build, integrated Intel UHD 750, Balanced): static ornament is merged into a
+  few geometries per material; Balanced keeps a pool of two room area lights that follow the visitor;
+  chandeliers use emissive candles rather than extra lights. Measured ≈29 fps in the atrium, ≈45 fps in
+  Gallery I and 31–38 fps in the Royal Salon.
+- Known limitation: on Balanced, a room you have not yet entered is lit only by daylight fill until you step
+  into it (High quality lights every room at once).
