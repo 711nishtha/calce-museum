@@ -16,17 +16,18 @@ const wallTexts: { exId: string; position: [number, number, number]; rotation: n
   { exId: "grammar-of-walls", position: [-11.22, 1.9, 5], rotation: -Math.PI / 2 },
   { exId: "salt-and-light", position: [-5.6, 1.9, -11.22], rotation: Math.PI },
   { exId: "rooms-that-listen", position: [-6, 1.9, -27.22], rotation: Math.PI },
+  { exId: "royal-salon", position: [-27.4, 1.9, -10.22], rotation: Math.PI },
 ];
 
 /** Labels carved above the passages inside the atrium drum, facing the centre. */
 const drumLabels = [
   { text: "I · SCULPTURE", angle: 0 },
   { text: "RECEPTION · CAFÉ · SHOP", angle: Math.PI / 2 },
-  { text: "II · PAINTING", angle: Math.PI },
-  { text: "III · PHOTOGRAPHY  ·  IV · INSTALLATION", angle: -Math.PI / 2 },
+  { text: "II · PAINTING\nV · ROYAL SALON", angle: Math.PI },
+  { text: "III · PHOTOGRAPHY\nIV · INSTALLATION", angle: -Math.PI / 2 },
 ];
 
-const roman = ["I", "II", "III", "IV"];
+const roman = ["I", "II", "III", "IV", "V"];
 
 export function Signage() {
   return (
@@ -46,7 +47,7 @@ export function Signage() {
         const x = ATRIUM.cx + Math.cos(l.angle) * r;
         const z = ATRIUM.cz + Math.sin(l.angle) * r;
         return (
-          <Text key={l.text} font={SANS} fontSize={0.2} letterSpacing={0.22} color={INK} position={[x, 4.95, z]} rotation={[0, -l.angle - Math.PI / 2, 0]} anchorX="center" anchorY="middle">
+          <Text key={l.text} font={SANS} fontSize={0.19} letterSpacing={0.22} lineHeight={1.5} textAlign="center" color={INK} position={[x, 5.0, z]} rotation={[0, -l.angle - Math.PI / 2, 0]} anchorX="center" anchorY="middle">
             {l.text}
           </Text>
         );

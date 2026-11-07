@@ -6,6 +6,8 @@ import { Suspense } from "react";
 import * as THREE from "three";
 import { Architecture } from "../architecture/Architecture";
 import { Furniture } from "../architecture/Furniture";
+import { Ornament } from "../architecture/Ornament";
+import { RoyalSalon } from "../architecture/RoyalSalon";
 import { Signage } from "../architecture/Signage";
 import { Artworks } from "../artworks/Artworks";
 import { Player } from "../controls/Player";
@@ -36,6 +38,8 @@ export default function MuseumCanvas({ onContextLost }: { onContextLost: () => v
       </group>
       <Landscape />
       <Furniture />
+      <Ornament />
+      <RoyalSalon />
       <Artworks />
       <Suspense fallback={null}>
         <Signage />

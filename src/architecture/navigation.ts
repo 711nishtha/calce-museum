@@ -25,6 +25,7 @@ export const arrivals: Record<Exclude<RoomId, `passage-${string}`>, Viewpoint> =
   "gallery-painting": { position: [-12.4, E, 0], lookAt: [-22, 1.6, 0] },
   "gallery-photography": { position: [0, E, -12.4], lookAt: [0, 1.4, -20] },
   "gallery-installation": { position: [0, E, -28.4], lookAt: [-2, 2.2, -36] },
+  "gallery-royal": { position: [-17.3, E, -11.4], lookAt: [-21, 3, -31] },
 };
 
 export function arrivalFor(room: RoomId): Viewpoint {

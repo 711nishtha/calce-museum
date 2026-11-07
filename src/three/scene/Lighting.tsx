@@ -2,10 +2,11 @@
 
 import { Environment, Lightformer, Sky } from "@react-three/drei";
 import { useThree } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as THREE from "three";
 import { RectAreaLightUniformsLib } from "three/examples/jsm/lights/RectAreaLightUniformsLib.js";
 import { rooms } from "@/architecture/floorplan";
+import type { RoomId } from "@/content/types";
 import { useMuseum } from "../state/museumStore";
 
 /** Late-afternoon sun from the south-west: long shadows, warm light through the oculus. */
@@ -13,7 +14,7 @@ export const SUN_DIRECTION = new THREE.Vector3(-0.55, 0.72, 0.42).normalize();
 const SITE_CENTRE = new THREE.Vector3(2, 0, -1);
 
 /** Daylight wash per room, standing in for diffuse light from the skylights. */
-const roomWash: Partial<Record<string, { intensity: number; color: string }>> = {
+const roomWash: Partial<Record<RoomId, { intensity: number; color: string }>> = {
   reception: { intensity: 3.2, color: "#fff4e2" },
   shop: { intensity: 3, color: "#ffeed8" },
   cafe: { intensity: 3, color: "#ffe9cf" },
@@ -21,6 +22,7 @@ const roomWash: Partial<Record<string, { intensity: number; color: string }>> = 
   "gallery-painting": { intensity: 4, color: "#fff7ee" },
   "gallery-photography": { intensity: 2.4, color: "#fff4e6" },
   "gallery-installation": { intensity: 1.5, color: "#fff1dc" },
+  "gallery-royal": { intensity: 3.4, color: "#ffe8cc" },
 };
 
 function Sun() {
@@ -57,6 +59,53 @@ function Sun() {
   return null;
 }
 
+interface Wash {
+  position: [number, number, number];
+  width: number;
+  height: number;
+  intensity: number;
+  color: string;
+}
+
+/** Daylight wash rectangles for every room that has one. */
+const washes: Partial<Record<RoomId, Wash>> = Object.fromEntries(
+  rooms.flatMap((room) => {
+    const wash = roomWash[room.id];
+    if (!wash || room.shape.type !== "rect") return [];
+    const { x0, x1, z0, z1 } = room.shape;
+    // the installation chamber stays dark: light only the main hall of the Long Room
+    const xr = room.id === "gallery-installation" ? [x0, 3.6] : [x0, x1];
+    return [[room.id, { position: [(xr[0]! + xr[1]!) / 2, room.ceiling - 0.05, (z0 + z1) / 2], width: (xr[1]! - xr[0]!) * 0.8, height: (z1 - z0) * 0.8, ...wash }]];
+  }),
+);
+
+function WashLight({ wash }: { wash: Wash | undefined }) {
+  // An unused slot stays in the scene at zero intensity so the shader light count never changes.
+  const w = wash ?? { position: [0, -50, 0] as [number, number, number], width: 1, height: 1, intensity: 0, color: "#ffffff" };
+  return <rectAreaLight position={w.position} rotation={[-Math.PI / 2, 0, 0]} width={w.width} height={w.height} intensity={w.intensity} color={w.color} />;
+}
+
+/**
+ * Area lights are the most expensive part of shading. High quality lights every room; Balanced
+ * keeps a fixed pool of two that follow the visitor: the room they are in and the last one before.
+ */
+function RoomWash() {
+  const quality = useMuseum((s) => s.quality);
+  const room = useMuseum((s) => s.room);
+  const [pool, setPool] = useState<[RoomId | null, RoomId | null]>(["reception", null]);
+  useEffect(() => {
+    if (!room || !washes[room]) return;
+    setPool(([a, b]) => (a === room ? [a, b] : [room, a]));
+  }, [room]);
+  if (quality === "high") return <>{(Object.keys(washes) as RoomId[]).map((id) => <WashLight key={id} wash={washes[id]} />)}</>;
+  return (
+    <>
+      <WashLight wash={pool[0] ? washes[pool[0]] : undefined} />
+      <WashLight wash={pool[1] ? washes[pool[1]] : undefined} />
+    </>
+  );
+}
+
 export function Lighting() {
   useMemo(() => RectAreaLightUniformsLib.init(), []);
   const sunPos = useMemo(() => SUN_DIRECTION.clone().multiplyScalar(1000), []);
@@ -66,24 +115,7 @@ export function Lighting() {
       <fog attach="fog" args={["#e3dccd", 110, 380]} />
       <hemisphereLight args={["#f3eadb", "#7d6b55", 0.55]} />
       <Sun />
-      {rooms.map((room) => {
-        const wash = roomWash[room.id];
-        if (!wash || room.shape.type !== "rect") return null;
-        const { x0, x1, z0, z1 } = room.shape;
-        // the installation chamber stays dark: light only the main hall of the Long Room
-        const xr = room.id === "gallery-installation" ? [x0, 3.6] : [x0, x1];
-        return (
-          <rectAreaLight
-            key={room.id}
-            position={[(xr[0]! + xr[1]!) / 2, room.ceiling - 0.05, (z0 + z1) / 2]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            width={(xr[1]! - xr[0]!) * 0.8}
-            height={(z1 - z0) * 0.8}
-            intensity={wash.intensity}
-            color={wash.color}
-          />
-        );
-      })}
+      <RoomWash />
       {/* Warm bounce in the atrium from the sunlit drum */}
       <pointLight position={[0, 6.5, 0]} intensity={60} distance={18} decay={2} color="#ffe7c6" />
       <Environment resolution={128} frames={1} environmentIntensity={0.35}>

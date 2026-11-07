@@ -17,7 +17,7 @@ export type RoomShape =
   | { type: "rect"; x0: number; x1: number; z0: number; z1: number }
   | { type: "circle"; cx: number; cz: number; r: number };
 
-export type FloorMaterial = "oak" | "travertine" | "terracotta" | "gravel" | "limestone";
+export type FloorMaterial = "oak" | "travertine" | "terracotta" | "gravel" | "limestone" | "marble";
 
 export interface RoomDef {
   id: RoomId;
@@ -83,6 +83,8 @@ export const rooms: RoomDef[] = [
   { id: "gallery-sculpture", name: "Gallery I — East", label: "Sculpture", kind: "gallery", shape: { type: "rect", x0: 11, x1: 29, z0: -8, z1: 8 }, ceiling: 6.2, floor: "limestone", exhibitionId: "weight-of-stillness", skylights: { axis: "x", at: [-4.5, 0, 4.5], width: 1.2 } },
   { id: "gallery-painting", name: "Gallery II — West", label: "Painting", kind: "gallery", shape: { type: "rect", x0: -29, x1: -11, z0: -8, z1: 8 }, ceiling: 6.2, floor: "oak", exhibitionId: "grammar-of-walls", skylights: { axis: "x", at: [-4.5, 0, 4.5], width: 1.2 } },
   { id: "gallery-photography", name: "Gallery III — North", label: "Photography", kind: "gallery", shape: { type: "rect", x0: -9, x1: 9, z0: -25, z1: -11 }, ceiling: 5.2, floor: "oak", exhibitionId: "salt-and-light", skylights: { axis: "x", at: [-21, -15], width: 1 } },
+  { id: "passage-royal", name: "Royal Passage", label: "Passage", kind: "passage", shape: { type: "rect", x0: -18.9, x1: -15.7, z0: -10, z1: -8 }, ceiling: PASSAGE_HEIGHT, floor: "limestone" },
+  { id: "gallery-royal", name: "Gallery V — The Royal Salon", label: "Royal Salon", kind: "gallery", shape: { type: "rect", x0: -31, x1: -11, z0: -32, z1: -10 }, ceiling: 8.4, floor: "marble", exhibitionId: "royal-salon", skylights: { axis: "z", at: [-21], width: 3 } },
   { id: "gallery-installation", name: "Gallery IV — The Long Room", label: "Installation", kind: "gallery", shape: { type: "rect", x0: -10, x1: 10, z0: -43, z1: -27 }, ceiling: 6.8, floor: "limestone", exhibitionId: "rooms-that-listen", skylights: { axis: "z", at: [-4.4], width: 1.6 } },
 ];
 
@@ -91,6 +93,7 @@ export const galleryNumeral: Partial<Record<RoomId, string>> = {
   "gallery-painting": "II",
   "gallery-photography": "III",
   "gallery-installation": "IV",
+  "gallery-royal": "V",
 };
 
 /** Polyline helper: consecutive points become wall segments. */
@@ -125,7 +128,7 @@ function atriumWalls(): WallSegment[] {
   return segs;
 }
 
-const H = { gallery: 6.8, gallerySmall: 5.8, public: 5.8, low: 1.1 };
+const H = { royal: 9.2, gallery: 6.8, gallerySmall: 5.8, public: 5.8, low: 1.1 };
 
 export const walls: WallSegment[] = [
   // Atrium drum
@@ -180,7 +183,14 @@ export const walls: WallSegment[] = [
   // Gallery II — Painting (west) with a freestanding partition
   ...line([[-11, -8], [-11, -PASSAGE_HALF]], H.gallery, "exterior"),
   ...line([[-11, PASSAGE_HALF], [-11, 8]], H.gallery, "exterior"),
-  ...line([[-11, -8], [-29, -8], [-29, 8], [-11, 8]], H.gallery, "exterior"),
+  // north wall opens to the Royal Salon passage
+  ...line([[-15.7, -8], [-11, -8]], H.gallery, "exterior"),
+  ...line([[-18.9, -8], [-29, -8], [-29, 8], [-11, 8]], H.gallery, "exterior"),
+
+  // Royal passage and Gallery V — The Royal Salon (north of Gallery II)
+  ...line([[-18.9, -10], [-18.9, -8]], PASSAGE_HEIGHT, "exterior"),
+  ...line([[-15.7, -10], [-15.7, -8]], PASSAGE_HEIGHT, "exterior"),
+  ...line([[-18.9, -10], [-31, -10], [-31, -32], [-11, -32], [-11, -10], [-15.7, -10]], H.royal, "exterior"),
   ...line([[-22, -3], [-22, 3]], 4.2, "partition"),
 
   // Gallery III — Photography (north) with two reading-room partitions
@@ -209,6 +219,8 @@ export const openings: Opening[] = [
   { id: "gallery-north", center: [0, -11], width: 3.2, spring: 2.8, axis: "x", kind: "arch", wallHeight: H.gallerySmall, connects: ["passage-north", "gallery-photography"] },
   { id: "photography-north", center: [0, -25], width: 3.2, spring: 2.8, axis: "x", kind: "arch", wallHeight: H.gallerySmall, connects: ["gallery-photography", "passage-far-north"] },
   { id: "installation-south", center: [0, -27], width: 3.2, spring: 2.8, axis: "x", kind: "arch", wallHeight: 7.4, connects: ["passage-far-north", "gallery-installation"] },
+  { id: "painting-royal", center: [-17.3, -8], width: 3.2, spring: 2.8, axis: "x", kind: "arch", wallHeight: H.gallery, connects: ["gallery-painting", "passage-royal"] },
+  { id: "royal-south", center: [-17.3, -10], width: 3.2, spring: 2.8, axis: "x", kind: "arch", wallHeight: H.royal, connects: ["passage-royal", "gallery-royal"] },
   { id: "installation-chamber", center: [4, -39.2], width: 3.6, spring: 2.6, axis: "z", kind: "arch", wallHeight: 6.8, connects: ["gallery-installation", "gallery-installation"] },
 ];
 
@@ -240,6 +252,18 @@ export const fixtures: Obstacle[] = [
   { type: "rect", x0: -26.4, x1: -24.4, z0: -0.4, z1: 0.4, tag: "bench" },
   // Photography gallery: central reading table
   { type: "rect", x0: -1.2, x1: 1.2, z0: -19.6, z1: -16.4, tag: "reading-table" },
+  // Atrium: marble pilasters set into the drum between the passages
+  ...[0, 1, 2, 3].flatMap((k) =>
+    [14, 45, 76].map((deg) => {
+      const t = ((k * 90 + deg) * Math.PI) / 180;
+      return { type: "circle" as const, x: ATRIUM.cx + Math.cos(t) * 8.62, z: ATRIUM.cz + Math.sin(t) * 8.62, r: 0.28, tag: "pilaster" };
+    }),
+  ),
+  // Royal Salon: two Ionic colonnades, a velvet ottoman and a pair of amphorae
+  ...[-14, -18.5, -23, -27.5].flatMap((z) => [-26.6, -15.4].map((x) => ({ type: "circle" as const, x, z, r: 0.55, tag: "column" }))),
+  { type: "circle", x: -21, z: -19.5, r: 1.25, tag: "ottoman" },
+  { type: "circle", x: -25, z: -30, r: 0.45, tag: "amphora" },
+  { type: "circle", x: -17, z: -30, r: 0.45, tag: "amphora" },
 ];
 
 export const SPAWN = { position: [0, EYE_HEIGHT, 39] as [number, number, number], yaw: 0 };
@@ -270,4 +294,4 @@ export function roomAt(x: number, z: number): RoomDef | null {
 }
 
 /** Overall extent of the site, used by the minimap and printed map. */
-export const SITE_BOUNDS = { x0: -30, x1: 35, z0: -44, z1: 43 } as const;
+export const SITE_BOUNDS = { x0: -33, x1: 35, z0: -44, z1: 43 } as const;
