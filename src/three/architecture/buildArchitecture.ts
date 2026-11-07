@@ -10,7 +10,7 @@ import { ATRIUM, WALL_THICKNESS, roomAt, rooms, walls, type FloorMaterial, type 
 import { scaleBoxUVs, scalePlaneUVs } from "../materials/materials";
 import { TILE_METRES, type Surface } from "../materials/textures";
 
-export type WallBucket = Extract<Surface, "plaster" | "ashlar" | "limestone" | "nightPlaster">;
+export type WallBucket = Extract<Surface, "plaster" | "ashlar" | "limestone" | "nightPlaster" | "oak" | "damask" | "walnutPanel">;
 
 type V3 = [number, number, number];
 
@@ -57,7 +57,28 @@ function faceSurface(w: WallSegment, px: number, pz: number): WallBucket {
   const room = roomAt(px, pz);
   if (!room || room.kind === "exterior") return "ashlar";
   if (room.id === "gallery-installation" && px > 4 && pz < -35) return "nightPlaster";
+  if (room.id === "gallery-royal") return "damask";
   return "plaster";
+}
+
+/**
+ * A horizontal moulding run along a wall face: a front strip standing `depth` proud of the
+ * face from y0 to y1, with top and bottom returns. Used for skirtings, dados and cornices.
+ */
+function moulding(b: QuadBuilder, cx: number, cz: number, ux: number, uz: number, nx: number, nz: number, half: number, y0: number, y1: number, depth: number) {
+  const fx = cx + nx * depth;
+  const fz = cz + nz * depth;
+  const at = (x: number, z: number, su: number, y: number): V3 => [x + ux * half * su, y, z + uz * half * su];
+  const along = (p: V3) => p[0] * ux + p[2] * uz;
+  const front: [V3, V3, V3, V3] = [at(fx, fz, -1, y0), at(fx, fz, 1, y0), at(fx, fz, 1, y1), at(fx, fz, -1, y1)];
+  b.quad(front, [nx, 0, nz], front.map((p) => [along(p), p[1]] as [number, number]));
+  for (const [y, ny] of [
+    [y1, 1],
+    [y0, -1],
+  ] as const) {
+    const q: [V3, V3, V3, V3] = [at(cx, cz, -1, y), at(cx, cz, 1, y), at(fx, fz, 1, y), at(fx, fz, -1, y)];
+    b.quad(q, [0, ny, 0], q.map((p) => [along(p), p[0] * nx + p[2] * nz] as [number, number]));
+  }
 }
 
 export function buildWalls(): Record<WallBucket, THREE.BufferGeometry> {
@@ -67,6 +88,9 @@ export function buildWalls(): Record<WallBucket, THREE.BufferGeometry> {
     ashlar: new QuadBuilder(TILE_METRES.ashlar),
     limestone: new QuadBuilder(TILE_METRES.limestone),
     nightPlaster: new QuadBuilder(TILE_METRES.nightPlaster),
+    oak: new QuadBuilder(TILE_METRES.oak),
+    damask: new QuadBuilder(TILE_METRES.damask),
+    walnutPanel: new QuadBuilder(TILE_METRES.walnutPanel),
   };
 
   for (const w of walls) {
@@ -98,6 +122,20 @@ export function buildWalls(): Record<WallBucket, THREE.BufferGeometry> {
         [along(p1), H],
         [along(p0), H],
       ]);
+      // Interior finishes: skirting, a panelled dado in the Royal Salon, and a stone cornice.
+      if (bucket === "ashlar") continue;
+      const sn = [nx * s, nz * s] as const;
+      const run = (b: QuadBuilder, y0: number, y1: number, depth: number) => moulding(b, cx, cz, ux, uz, sn[0], sn[1], half - 0.001, y0, y1, depth);
+      if (bucket === "damask") {
+        run(builders.walnutPanel, 0, 1.15, 0.04);
+        run(builders.oak, 1.15, 1.22, 0.07);
+      } else run(builders.oak, 0, 0.14, 0.018);
+      const room = roomAt(mx + nx * 0.7 * s, mz + nz * 0.7 * s);
+      const ceiling = room?.ceiling ?? 0;
+      if (w.kind !== "partition" && ceiling > 0 && ceiling <= H) {
+        run(builders.limestone, ceiling - 0.3, ceiling - 0.18, 0.05);
+        run(builders.limestone, ceiling - 0.18, ceiling, 0.11);
+      }
     }
     // coping
     const c = (su: number, sn: number): V3 => [mx + ux * half * su + nx * t * sn, H, mz + uz * half * su + nz * t * sn];
@@ -117,12 +155,7 @@ export function buildWalls(): Record<WallBucket, THREE.BufferGeometry> {
       ]);
     }
   }
-  return {
-    plaster: builders.plaster.build(),
-    ashlar: builders.ashlar.build(),
-    limestone: builders.limestone.build(),
-    nightPlaster: builders.nightPlaster.build(),
-  };
+  return Object.fromEntries(Object.entries(builders).map(([k, b]) => [k, b.build()])) as Record<WallBucket, THREE.BufferGeometry>;
 }
 
 export interface SkylightRect {
@@ -182,7 +215,7 @@ export function buildCeilings(): { geometry: THREE.BufferGeometry; skylights: Sk
 /** Floor planes grouped by material, plus the atrium disc. */
 export function buildFloors(): Partial<Record<FloorMaterial, THREE.BufferGeometry>> {
   const groups: Partial<Record<FloorMaterial, THREE.BufferGeometry[]>> = {};
-  const tileFor: Record<FloorMaterial, number> = { oak: TILE_METRES.oak, travertine: TILE_METRES.travertine, terracotta: TILE_METRES.terracotta, gravel: TILE_METRES.gravel, limestone: TILE_METRES.limestone };
+  const tileFor: Record<FloorMaterial, number> = { oak: TILE_METRES.oak, travertine: TILE_METRES.travertine, terracotta: TILE_METRES.terracotta, gravel: TILE_METRES.gravel, limestone: TILE_METRES.limestone, marble: TILE_METRES.marble };
   for (const room of rooms) {
     let g: THREE.BufferGeometry;
     if (room.shape.type === "rect") {

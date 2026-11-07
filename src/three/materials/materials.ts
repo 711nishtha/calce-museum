@@ -27,13 +27,16 @@ const roughness: Record<Surface, number> = {
   gravel: 1,
   earth: 1,
   nightPlaster: 0.95,
+  damask: 0.8,
+  walnutPanel: 0.5,
+  marble: 0.22,
 };
 
 export function surface(s: Surface): THREE.MeshStandardMaterial {
   return memo(`surface:${s}`, () => {
     const map = surfaceTexture(s);
     const mat = new THREE.MeshStandardMaterial({ map, roughness: roughness[s] });
-    if (s !== "plaster" && s !== "nightPlaster") {
+    if (s !== "plaster" && s !== "nightPlaster" && s !== "marble") {
       mat.bumpMap = map;
       mat.bumpScale = s === "ashlar" || s === "limestone" ? 0.18 : 0.5;
     }
@@ -54,6 +57,13 @@ export function sculptureMaterial(m: SculptureMaterial): THREE.MeshStandardMater
     return new THREE.MeshStandardMaterial({ color: c.light, roughness: 0.4 });
   });
 }
+
+/** Burnished gilding for frames, chandeliers and capitals. A little emissive keeps it warm without an environment map. */
+export const giltMaterial = () =>
+  memo("gilt", () => new THREE.MeshStandardMaterial({ color: "#c9a24c", metalness: 0.7, roughness: 0.32, emissive: new THREE.Color("#4a3410"), emissiveIntensity: 0.6 }));
+
+/** Polished white marble for columns, pedestals and the atrium pilasters. */
+export const marbleWhite = () => memo("marble-white", () => new THREE.MeshStandardMaterial({ color: "#f2eee6", roughness: 0.28, metalness: 0 }));
 
 export const glass = () =>
   memo("glass", () => new THREE.MeshPhysicalMaterial({ color: "#dfe9e6", metalness: 0, roughness: 0.05, transmission: 0, transparent: true, opacity: 0.18, depthWrite: false }));

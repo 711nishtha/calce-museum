@@ -141,7 +141,7 @@ export function Architecture() {
   const ceilings = useMemo(() => buildCeilings(), []);
   const floors = useMemo(() => buildFloors(), []);
 
-  const floorMats = { oak: surface("oak"), travertine: surface("travertine"), terracotta: surface("terracotta"), gravel: surface("gravel"), limestone: surface("limestone") } as const;
+  const floorMats = { oak: surface("oak"), travertine: surface("travertine"), terracotta: surface("terracotta"), gravel: surface("gravel"), limestone: surface("limestone"), marble: surface("marble") } as const;
 
   return (
     <group>

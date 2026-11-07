@@ -6,7 +6,7 @@
 import * as THREE from "three";
 import { rng } from "@/graphics/rng";
 
-export type Surface = "limestone" | "ashlar" | "plaster" | "travertine" | "oak" | "terracotta" | "gravel" | "earth" | "nightPlaster";
+export type Surface = "limestone" | "ashlar" | "plaster" | "travertine" | "oak" | "terracotta" | "gravel" | "earth" | "nightPlaster" | "damask" | "walnutPanel" | "marble";
 
 /** metres covered by one repeat of each texture */
 export const TILE_METRES: Record<Surface, number> = {
@@ -19,6 +19,9 @@ export const TILE_METRES: Record<Surface, number> = {
   gravel: 3,
   earth: 12,
   nightPlaster: 6,
+  damask: 1.2,
+  walnutPanel: 2.4,
+  marble: 2.4,
 };
 
 const cache = new Map<string, THREE.CanvasTexture>();
@@ -102,6 +105,96 @@ const painters: Record<Surface, (ctx: CanvasRenderingContext2D, s: number) => vo
     ctx.fillRect(0, 0, s, s);
     mottle(ctx, s, 7, ["#f3ebdd", "#e7dcc8", "#efe6d6"], 30, 0.18);
     speckle(ctx, s, 8, 2400, ["#ddd0b8", "#fbf6ec"], 0.3, 0.9, 0.18);
+  },
+  damask: (ctx, s) => {
+    // Oxblood silk damask: a tone-on-tone ogee lattice with palmettes, as in royal picture galleries.
+    ctx.fillStyle = "#5e1f22";
+    ctx.fillRect(0, 0, s, s);
+    mottle(ctx, s, 31, ["#6a2427", "#531b1e"], 20, 0.35);
+    const q = s / 2;
+    ctx.strokeStyle = "rgba(150,62,58,0.55)";
+    ctx.fillStyle = "rgba(140,56,52,0.45)";
+    ctx.lineWidth = 3;
+    for (let i = 0; i < 3; i++)
+      for (let j = 0; j < 3; j++) {
+        const cx = i * q;
+        const cy = j * q + (i % 2) * (q / 2);
+        ctx.beginPath();
+        ctx.moveTo(cx, cy - q * 0.48);
+        ctx.bezierCurveTo(cx + q * 0.42, cy - q * 0.25, cx + q * 0.42, cy + q * 0.25, cx, cy + q * 0.48);
+        ctx.bezierCurveTo(cx - q * 0.42, cy + q * 0.25, cx - q * 0.42, cy - q * 0.25, cx, cy - q * 0.48);
+        ctx.stroke();
+        for (let k = 0; k < 5; k++) {
+          const a = -Math.PI / 2 + (k - 2) * 0.42;
+          ctx.beginPath();
+          ctx.ellipse(cx + Math.cos(a) * q * 0.14, cy + Math.sin(a) * q * 0.14 + q * 0.05, q * 0.035, q * 0.12, a + Math.PI / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    speckle(ctx, s, 32, 3000, ["#7a2e2c", "#3e1214"], 0.3, 0.8, 0.35);
+  },
+  walnutPanel: (ctx, s) => {
+    // Raised walnut panels, 0.6 m wide, with bevelled stiles.
+    ctx.fillStyle = "#4a3022";
+    ctx.fillRect(0, 0, s, s);
+    const r = rng(33);
+    for (let k = 0; k < 900; k++) {
+      ctx.strokeStyle = `rgba(30,18,12,${r.range(0.06, 0.2).toFixed(2)})`;
+      ctx.beginPath();
+      const x = r.next() * s;
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x + r.range(-4, 4), s);
+      ctx.stroke();
+    }
+    const n = 4;
+    const pw = s / n;
+    for (let i = 0; i < n; i++) {
+      const x = i * pw;
+      ctx.fillStyle = "rgba(255,220,180,0.07)";
+      ctx.fillRect(x + pw * 0.12, s * 0.12, pw * 0.76, s * 0.76);
+      ctx.strokeStyle = "rgba(20,10,6,0.55)";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(x + pw * 0.12, s * 0.12, pw * 0.76, s * 0.76);
+      ctx.strokeStyle = "rgba(255,225,190,0.18)";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x + pw * 0.16, s * 0.16, pw * 0.68, s * 0.68);
+    }
+  },
+  marble: (ctx, s) => {
+    // Chequerboard of Carrara white and Nero Marquina black, 0.4 m squares, softly veined.
+    const n = 4;
+    const t = s / n;
+    for (let i = 0; i < n; i++)
+      for (let j = 0; j < n; j++) {
+        ctx.fillStyle = (i + j) % 2 ? "#1e1b1a" : "#ece7df";
+        ctx.fillRect(i * t, j * t, t, t);
+      }
+    const r = rng(35);
+    for (let v = 0; v < 26; v++) {
+      const dark = r.next() < 0.5;
+      ctx.strokeStyle = dark ? "rgba(120,112,104,0.35)" : "rgba(240,236,228,0.28)";
+      ctx.lineWidth = r.range(0.6, 2.2);
+      ctx.beginPath();
+      let x = r.next() * s;
+      let y = 0;
+      ctx.moveTo(x, y);
+      while (y < s) {
+        x += r.range(-14, 14);
+        y += r.range(10, 26);
+        ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.strokeStyle = "rgba(90,80,70,0.5)";
+    ctx.lineWidth = 1.5;
+    for (let i = 0; i <= n; i++) {
+      ctx.beginPath();
+      ctx.moveTo(i * t, 0);
+      ctx.lineTo(i * t, s);
+      ctx.moveTo(0, i * t);
+      ctx.lineTo(s, i * t);
+      ctx.stroke();
+    }
   },
   nightPlaster: (ctx, s) => {
     ctx.fillStyle = "#3a322b";
