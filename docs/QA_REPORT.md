@@ -92,4 +92,9 @@ text pair used, token parity between CSS and TypeScript.
 ## Deployment
 
 `npm run build && npm start` on Node 20.9+, or deploy the repository to Vercel. Set
-`NEXT_PUBLIC_SITE_URL`. No secrets are required. Public deployment has not been performed.
+`NEXT_PUBLIC_SITE_URL`. No secrets are required.
+
+Live on GitHub Pages: https://711nishtha.github.io/calce-museum/ — deployed by
+`.github/workflows/deploy.yml` on every push to `main`. Verified after deploy: key pages, media,
+fonts and the 404 page return the right status and content type; the 3D museum loads all 33 works,
+follows a `?room=` deep link and logs no console errors.
