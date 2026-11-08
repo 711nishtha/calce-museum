@@ -1,75 +1,84 @@
 # CALCE — The Cultural Salon
 
-A digital contemporary art museum: an editorial website and a real-time 3D walkthrough of a
-Mediterranean museum of limestone, oak and daylight. Four curated exhibitions (sculpture, painting,
-camera-less photography, installation) with 12 fictional artists and 33 original works; **Gallery V — The
-Royal Salon**, a colonnaded picture gallery hung with 12 public-domain masterpieces in reproduction; a café,
-sculpture garden and shop, a demonstration ticket booking flow and a complete graphic identity.
+A museum of contemporary art built of limestone, oak and daylight — that exists only online. Walk through
+it in real time, room by room, or browse it as a website.
 
-**Live:** https://711nishtha.github.io/calce-museum/
+### **[Visit the museum →](https://711nishtha.github.io/calce-museum/)**
 
-> CALCE and its contemporary artists, works and texts are fictional. The Royal Salon shows photographic
-> reproductions of public-domain paintings, each credited to the collection that holds the original (images:
-> Wikimedia Commons). Ticket booking and shop reservations are demonstrations: no payment is taken and no
-> ticket is valid for entry.
+![The CALCE homepage](docs/images/homepage.jpeg)
 
-## Requirements
+---
 
-- Node.js 20.9 or newer (developed on Node 24) and npm 10+
-- A browser with WebGL 2 for the 3D museum (the website works without it)
+## Walk in
 
-## Run locally
+You arrive in an olive forecourt. A single arched portal leads through the reception hall into a day-lit
+atrium, where an olive tree grows under an open oculus. Five galleries open from there.
 
-```bash
-npm install
-npm run dev            # http://localhost:3000
-```
+![The forecourt](public/views/forecourt.webp)
 
-Production:
+**[Enter the 3D museum →](https://711nishtha.github.io/calce-museum/museum/)** ·
+**[Start the guided tour →](https://711nishtha.github.io/calce-museum/museum/?tour=1)**
 
-```bash
-npm run build
-npm start              # http://localhost:3000
-```
+## The galleries
 
-Quality checks:
+### I · The Weight of Stillness — sculpture
 
-```bash
-npm run check          # TypeScript + ESLint + Vitest (40 tests)
-```
+Nothing in this room is glued, pinned or bolted. Stacked limestone, bronze cast from fishing nets, a
+terracotta arch too narrow to be comfortable. A glazed door opens onto the sculpture garden.
 
-## Exploring the museum
+![Gallery I — sculpture](public/views/gallery-sculpture.webp)
 
-- Open **/museum** (or "Enter the museum" in the header). Choose **Enter the museum** or **Guided tour**.
-- **Desktop**: click the view to capture the mouse. `W A S D` / `↑ ↓` walk, mouse or `← →` look,
-  `Shift` walks briskly, `E` or click reads about the work in front of you, `M` map, `G` directory,
-  `T` guided tour, `N`/`B` next/previous tour stop, `Esc` releases the mouse or closes a panel.
-- **Touch**: drag on the left half to walk, on the right half to look; tap "Read" on a work.
-- **Without mouse-look**: the Directory lists every room and work with "Go", "View" and "About" — the
-  whole museum is navigable by keyboard and screen reader.
-- **Deep links**: `/museum?room=gallery-painting`, `/museum?work=meridian`, `/museum?tour=1`. Every
-  artwork page on the website has "Find it in the 3D museum".
-- **Accessibility**: `H` opens help and comfort settings (reduce motion, lighter graphics); the Directory
-  starts with where you are and the ways on from there; room changes and the work in front of you are
-  announced to screen readers.
-- If WebGL is unavailable, the route explains why and links to the map, tour and collection instead.
+### II · A Grammar of Walls — painting
 
-## Website
+An argument with the postcard Mediterranean: earth pigments sanded back until they look used, arches
+emptied of people, frescoes of cracks and repairs nobody photographs.
 
-`/` home · `/exhibitions` and five exhibition pages · `/artists` and 24 artist pages ·
-`/collection` (filters, search) and 45 artwork pages · `/visit` · `/map` (interactive plan and tour) ·
-`/tickets` → `/tickets/confirmation` · `/journal` and four articles · `/shop` · `/identity` (design system
-and downloadable print assets).
+![Gallery II — painting](public/views/gallery-painting.webp)
 
-## Project structure
+### III · Salt & Light — photographs made without a camera
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). In short: content in `src/content`, the floor plan
-and collision in `src/architecture`, SVG generators in `src/graphics`, the 3D scene in `src/three`,
-routes in `src/app`. Design specifications: [docs/DESIGN_SYSTEM.md](docs/DESIGN_SYSTEM.md). QA results
-and limitations: [docs/QA_REPORT.md](docs/QA_REPORT.md).
+Cyanotypes exposed by the Marseille sun, photograms of glass and water, prints left at the tideline for a
+day. A low-lit reading room with the artists' notebooks on the table.
 
-## Credits
+![Gallery III — photography](public/views/gallery-photography.webp)
 
-Typefaces: Instrument Serif and Instrument Sans, SIL Open Font License (licences in `public/fonts`).
-Imagery for the original works is generated by the code in `src/graphics` and `src/three`. Royal Salon
-reproductions: public-domain images from Wikimedia Commons, credited per work in `src/content/reproductions.ts`.
+### IV · Rooms That Listen — installation
+
+The most divisive room in the building: 2,400 linen threads that move only because you do, a basin of
+still water that mirrors the room, a wall that breathes, and a single line of light in a dark chamber.
+
+![Gallery IV — installation](public/views/gallery-installation.webp)
+
+### V · The Royal Salon — masterpieces in reproduction
+
+A colonnaded picture gallery of damask, gilt and marble, hung with twelve public-domain paintings —
+*The School of Athens*, *Las Meninas*, *The Ambassadors*, the *Mona Lisa*, *The Birth of Venus* and more —
+shown as painting as propaganda, from Raphael to David.
+
+![Gallery V — the Royal Salon](public/views/gallery-royal.webp)
+
+## Finding your way
+
+- **Mouse and keyboard** — click to look around; `W A S D` or the arrow keys to walk, `Shift` to walk
+  faster, `E` to read about the work in front of you.
+- **Keyboard only** — the arrow keys walk and turn; `G` opens a directory of where you are, the ways on
+  and every work; `T` starts the guided tour (`N` / `B` for next and previous).
+- **Phone or tablet** — drag on the left of the screen to walk, on the right to look.
+- **Help and comfort** — press `H` for every control, a *Reduce motion* switch and lighter graphics.
+  Room changes and the work you are facing are announced to screen readers.
+- **Jump straight in** — every gallery and every work on the website has a link that opens the 3D museum
+  standing right there.
+
+## Beyond the galleries
+
+The website carries the same museum in another form: exhibition pages and curators' statements, artist
+biographies, a searchable collection of 45 works, an interactive map, a journal (including a critic arguing
+against the museum's whole idea), a shop, and a full graphic identity — posters, signage, tickets and
+catalogue covers.
+
+---
+
+<sub>CALCE, its contemporary artists, works and texts are fictional. The Royal Salon shows reproductions
+of public-domain paintings, each credited to the collection that holds the original; images from Wikimedia
+Commons. Ticket booking and shop reservations are demonstrations — no payment is taken. Typefaces:
+Instrument Serif and Instrument Sans (SIL Open Font License).</sub>
