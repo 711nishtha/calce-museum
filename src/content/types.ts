@@ -121,7 +121,7 @@ export interface JournalArticle {
   dek: string;
   author: string;
   date: string;
-  category: "Architecture" | "Studio visit" | "Essay" | "Materials";
+  category: "Architecture" | "Studio visit" | "Essay" | "Materials" | "Opinion" | "Families";
   body: string[];
 }
 

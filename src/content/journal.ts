@@ -59,6 +59,41 @@ export const articles: JournalArticle[] = [
       "Terracotta appears in the café floor, the roof tiles and the planters of the forecourt. Every tile was made by a single family workshop that has supplied the region's builders for four generations. The same workshop throws the cups we use in the café and sell in the shop.",
     ],
   },
+  {
+    slug: "against-slow-looking",
+    title: "Against slow looking",
+    dek: "A guest critic thinks this museum is too pleased with its own calm. We asked her to say so here.",
+    author: "Dana Okafor-Reyes (guest)",
+    date: "2026-11-05",
+    category: "Opinion",
+    body: [
+      "CALCE wants you to slow down. Every label ends with a gentle instruction; every gallery has a bench placed exactly where the curator thinks you should sit. It is beautiful, and I find it slightly bossy.",
+      "Slow looking has become the house style of a certain kind of museum: limestone, daylight, an olive tree, a promise that if you only pay attention for long enough, the work will reward you. Sometimes it does. Often a work is simply not very good, and staring at it for ten minutes does not change that — it only makes you complicit.",
+      "Fast looking has its own intelligence. Walk through Rooms That Listen at a normal pace and the threads behave like a crowd; stand still, as the label suggests, and they behave like decoration. The Royal Salon, which hangs twelve of the most famous paintings in Europe in one room, practically begs you to rush, compare and argue — and that is the most alive room in the building.",
+      "None of this is a reason to stay away. It is a reason to ignore the benches when you feel like it, skip what bores you, and disagree with the wall text out loud. The museum told me it would publish this unedited. It has.",
+    ],
+  },
+  {
+    slug: "ten-things-to-find",
+    title: "Ten things to find",
+    dek: "A trail through the museum for anyone under twelve — or anyone pretending to be.",
+    author: "The Learning Team",
+    date: "2026-10-18",
+    category: "Families",
+    body: [
+      "1. A skull hiding in a painting. You have to stand at the side to see it. (Royal Salon, The Ambassadors.)",
+      "2. A dog lying on the floor of a palace. Is it asleep? (Royal Salon, Las Meninas.)",
+      "3. A pile of seven stones that nobody glued together. Do not push it. Really. (Gallery I.)",
+      "4. A ring made from a rope. How many times does the rope go round? (Gallery I.)",
+      "5. A blue picture of leaves that blew away while the sun was printing them. (Gallery III.)",
+      "6. A wall that breathes. Can you breathe at the same speed? (Gallery IV.)",
+      "7. A pool you can see the sky in, indoors. (Gallery IV.)",
+      "8. A bench made for two people who have never met. Sit on it with a grown-up who is pretending not to know you. (Garden.)",
+      "9. The oldest painting in the museum — it is almost six hundred years old and has a tiny mirror in it. (Royal Salon.)",
+      "10. The olive tree in the middle of everything. Count the benches around it. Bonus point: find the star in the floor.",
+      "Found all ten? Tell the person at the reception desk. In this fictional museum there is no prize — but in a real one there would be a postcard.",
+    ],
+  },
 ];
 
 export function getArticle(slug: string): JournalArticle | undefined {
