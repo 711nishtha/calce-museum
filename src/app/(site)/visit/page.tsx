@@ -50,9 +50,10 @@ export default function VisitPage() {
             </table>
             <div className="btn-row mt-6">
               <Link href="/tickets" className="btn btn--primary">
-                Book a timed entry
+                Try the booking demo
               </Link>
             </div>
+            <p className="small soft mt-4">Online booking is a working demonstration — no payment, no valid ticket.</p>
           </div>
         </div>
       </section>
