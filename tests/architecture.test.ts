@@ -147,3 +147,24 @@ describe("artwork placement", () => {
     }
   });
 });
+
+describe("room adjacency", () => {
+  it("connects rooms through passages, symmetrically, so every room is reachable room by room", async () => {
+    const { exitsFrom } = await import("@/architecture/navigation");
+    expect(exitsFrom("atrium").map((e) => e.room).sort()).toEqual(["gallery-painting", "gallery-photography", "gallery-sculpture", "reception"]);
+    expect(exitsFrom("gallery-painting").map((e) => e.room)).toContain("gallery-royal");
+    expect(exitsFrom("reception").find((e) => e.room === "atrium")?.direction).toBe("north");
+    const all = rooms.filter((r) => r.kind !== "passage").map((r) => r.id);
+    for (const id of all) for (const e of exitsFrom(id)) expect(exitsFrom(e.room).map((x) => x.room), `${e.room} -> ${id}`).toContain(id);
+    const seen = new Set(["forecourt"]);
+    const queue = ["forecourt"] as typeof all;
+    while (queue.length) {
+      for (const e of exitsFrom(queue.shift()!)) {
+        if (seen.has(e.room)) continue;
+        seen.add(e.room);
+        queue.push(e.room);
+      }
+    }
+    expect([...seen].sort()).toEqual([...all].sort());
+  });
+});

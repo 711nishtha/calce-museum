@@ -36,7 +36,6 @@ export function Player() {
   const vel = useRef(new THREE.Vector2());
   const walked = useRef(0);
   const lastPose = useRef(0);
-  const reduced = useMemo(() => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches, []);
 
   useEffect(() => {
     camera.position.set(...SPAWN.position);
@@ -97,6 +96,7 @@ export function Player() {
     const sameRoom = roomAt(from.x, from.z)?.id === roomAt(to.x, to.z)?.id;
     const duration = t.duration ?? (sameRoom ? Math.min(1.3, 0.45 + from.distanceTo(to) * 0.07) : 0);
 
+    const reduced = useMuseum.getState().reducedMotion;
     if (reduced || duration === 0) {
       // Different rooms: fade through ivory rather than gliding through walls.
       const veil = document.getElementById("museum-veil");
@@ -135,7 +135,7 @@ export function Player() {
 
     // Cinematic approach behind the start screen: a slow drift in front of the façade.
     if (s.mode === "intro") {
-      const t = reduced ? 0 : performance.now() / 1000;
+      const t = s.reducedMotion ? 0 : performance.now() / 1000;
       camera.position.set(Math.sin(t * 0.05) * 5, 2.2 + Math.sin(t * 0.08) * 0.25, 41.2);
       camera.lookAt(-2 + Math.sin(t * 0.05) * 2, 3.6, 23);
       const e = new THREE.Euler().setFromQuaternion(camera.quaternion, "YXZ");
@@ -186,7 +186,7 @@ export function Player() {
     walked.current += moved;
     camera.position.x = nx;
     camera.position.z = nz;
-    const bob = reduced ? 0 : Math.sin(walked.current * 3.4) * 0.01 * Math.min(1, moved / (dt * WALK + 1e-6));
+    const bob = s.reducedMotion ? 0 : Math.sin(walked.current * 3.4) * 0.01 * Math.min(1, moved / (dt * WALK + 1e-6));
     camera.position.y = EYE_HEIGHT + bob;
 
     s.setRoom(roomAt(nx, nz)?.id ?? null);

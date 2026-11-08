@@ -9,7 +9,7 @@ import { matte } from "../materials/materials";
 import { useMuseum } from "../state/museumStore";
 import { HitBox, facingRotation } from "./WallArtwork";
 
-const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const still = () => useMuseum.getState().reducedMotion;
 
 /** Collettivo Mareo — linen threads that sway and part around the visitor. */
 function Threads({ work }: { work: Artwork }) {
@@ -37,10 +37,9 @@ function Threads({ work }: { work: Artwork }) {
     b.setAttribute("position", new THREE.BufferAttribute(bead, 3));
     return { geometry: g, beads: b, base };
   }, [count, p.x, p.z]);
-  const still = useMemo(reducedMotion, []);
 
   useFrame(({ clock, camera }) => {
-    if (still) return;
+    if (still()) return;
     const t = clock.elapsedTime;
     const cx = camera.position.x;
     const cz = camera.position.z;
@@ -118,9 +117,8 @@ function MirrorPool({ work }: { work: Artwork }) {
 function BreathingWall({ work }: { work: Artwork }) {
   const p = work.placement as { x: number; z: number; y?: number; facing: keyof typeof facingRotation };
   const mat = useMemo(() => new THREE.MeshStandardMaterial({ color: "#d9ccb3", emissive: new THREE.Color("#ffe6bf"), emissiveIntensity: 0.4, roughness: 0.95 }), []);
-  const still = useMemo(reducedMotion, []);
   useFrame(({ clock }) => {
-    if (still) return;
+    if (still()) return;
     const phase = (clock.elapsedTime % 60) / 60;
     mat.emissiveIntensity = 0.12 + 0.6 * (0.5 - 0.5 * Math.cos(phase * Math.PI * 2));
   });

@@ -25,6 +25,10 @@ interface MuseumState {
   openArtworkId: string | null;
   tourIndex: number;
   quality: Quality;
+  /** no glides, sway, head bob or breathing; starts from the OS setting and can be toggled in the museum */
+  reducedMotion: boolean;
+  /** text announced to screen readers (room changes, arrivals, focus) */
+  announcement: string;
   touch: boolean;
   /** pending scripted camera move, consumed by the player controller */
   cameraTarget: CameraTarget | null;
@@ -44,6 +48,8 @@ interface MuseumState {
   closeArtwork: () => void;
   setTourIndex: (i: number) => void;
   setQuality: (q: Quality) => void;
+  setReducedMotion: (v: boolean) => void;
+  announce: (text: string) => void;
   setTouch: (v: boolean) => void;
   goTo: (t: CameraTarget) => void;
   consumeCameraTarget: () => CameraTarget | null;
@@ -61,6 +67,8 @@ export const useMuseum = create<MuseumState>()((set, get) => ({
   openArtworkId: null,
   tourIndex: 0,
   quality: "high",
+  reducedMotion: typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  announcement: "",
   touch: false,
   cameraTarget: null,
   travelling: false,
@@ -77,6 +85,8 @@ export const useMuseum = create<MuseumState>()((set, get) => ({
   closeArtwork: () => set({ openArtworkId: null, panel: "none" }),
   setTourIndex: (tourIndex) => set({ tourIndex }),
   setQuality: (quality) => set({ quality }),
+  setReducedMotion: (reducedMotion) => set({ reducedMotion }),
+  announce: (announcement) => set({ announcement }),
   setTouch: (touch) => set({ touch }),
   goTo: (cameraTarget) => set({ cameraTarget }),
   consumeCameraTarget: () => {

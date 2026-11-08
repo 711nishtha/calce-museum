@@ -18,6 +18,8 @@ import { Directory } from "./Directory";
 import { Minimap } from "./Minimap";
 import { TouchControls } from "./TouchControls";
 import { TourPanel } from "./TourPanel";
+import { Announcer } from "./Announcer";
+import { HelpPanel } from "./HelpPanel";
 
 const MuseumCanvas = dynamic(() => import("@/three/scene/MuseumCanvas"), { ssr: false });
 
@@ -151,6 +153,10 @@ export function MuseumExperience() {
       const st = useMuseum.getState();
       if (st.mode === "intro") return;
       if (e.code === "KeyM") setShowMap((v) => !v);
+      if ((e.code === "KeyH" || e.key === "?") && st.panel === "none") {
+        if (document.pointerLockElement) document.exitPointerLock();
+        st.setPanel("help");
+      }
       if (e.code === "KeyG" && st.panel === "none") {
         if (document.pointerLockElement) document.exitPointerLock();
         st.setPanel("directory");
@@ -188,7 +194,7 @@ export function MuseumExperience() {
             <BrandMark />
             <span>CALCE</span>
           </Link>
-          <div className="m-place" aria-live="polite">
+          <div className="m-place">
             <div className="m-place__room">{room?.name ?? "Outside"}</div>
             {exhibition && <div className="m-place__ex">{exhibition.title}</div>}
           </div>
@@ -198,6 +204,9 @@ export function MuseumExperience() {
             </button>
             <button type="button" className="m-btn" onClick={() => s.setPanel("directory")}>
               Directory <kbd>G</kbd>
+            </button>
+            <button type="button" className="m-btn" onClick={() => s.setPanel("help")}>
+              Help <kbd>H</kbd>
             </button>
             <button
               type="button"
@@ -211,7 +220,7 @@ export function MuseumExperience() {
                 }
               }}
             >
-              <span className="m-btn__label--wide">Guided</span> tour <kbd>T</kbd>
+              <span className="m-btn__label--wide">Guided tour</span><span className="m-btn__label--narrow">Tour</span> <kbd>T</kbd>
             </button>
             <Link href="/" className="m-btn m-btn--exit">
               Exit
@@ -223,7 +232,7 @@ export function MuseumExperience() {
       {s.mode !== "intro" && !s.touch && s.locked && <div className="m-reticle" data-focus={!!focused} aria-hidden="true" />}
 
       {s.mode !== "intro" && focused && s.panel === "none" && !s.travelling && (
-        <div className="m-prompt" role="status">
+        <div className="m-prompt">
           <span className="m-prompt__title">{focused.title}</span>
           <span className="m-prompt__by">{getArtist(focused.artistId)?.name}</span>
           <button
@@ -257,6 +266,8 @@ export function MuseumExperience() {
 
       {s.panel === "artwork" && <ArtworkPanel onClose={closePanel} />}
       {s.panel === "directory" && <Directory onClose={() => s.setPanel("none")} />}
+      {s.panel === "help" && <HelpPanel onClose={() => s.setPanel("none")} />}
+      <Announcer />
 
       {s.mode === "intro" && (
         <section className="m-start" aria-labelledby="m-start-title">
@@ -305,11 +316,6 @@ export function MuseumExperience() {
               <Link href="/" className="m-btn">
                 Back to the website
               </Link>
-              {s.touch && (
-                <Link href="/map" className="m-btn">
-                  Room by room, without 3D
-                </Link>
-              )}
             </div>
             <fieldset className="mt-6" style={{ border: 0, padding: 0, margin: "var(--space-5) 0 0" }}>
               <legend className="label">Picture quality</legend>
@@ -321,6 +327,17 @@ export function MuseumExperience() {
                 ))}
               </div>
             </fieldset>
+            <fieldset style={{ border: 0, padding: 0, margin: "var(--space-4) 0 0" }}>
+              <legend className="label">Comfort</legend>
+              <div className="btn-row" style={{ marginTop: 6 }}>
+                <button type="button" className="m-btn" aria-pressed={s.reducedMotion} onClick={() => s.setReducedMotion(!s.reducedMotion)}>
+                  Reduce motion: {s.reducedMotion ? "on" : "off"}
+                </button>
+              </div>
+            </fieldset>
+            <p className="small soft mt-4">
+              Fully usable from the keyboard: arrow keys to walk and turn, G for a directory of rooms and works, T for the guided tour, H for help. Prefer no 3D? <Link href="/map">Explore room by room on the website</Link>.
+            </p>
           </div>
         </section>
       )}

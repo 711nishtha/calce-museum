@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { rooms } from "@/architecture/floorplan";
-import { arrivalFor, viewpointFor } from "@/architecture/navigation";
+import { roomById, rooms } from "@/architecture/floorplan";
+import { arrivalFor, exitsFrom, viewpointFor } from "@/architecture/navigation";
 import { artworks } from "@/content/artworks";
 import { getExhibition } from "@/content/exhibitions";
 import { useMuseum } from "@/three/state/museumStore";
@@ -16,6 +16,10 @@ export function Directory({ onClose }: { onClose: () => void }) {
   const openArtwork = useMuseum((s) => s.openArtwork);
   const current = useMuseum((s) => s.room);
   const headingRef = useRef<HTMLHeadingElement>(null);
+  const hereRoom = current ? roomById(current) : null;
+  const hereEx = hereRoom?.exhibitionId ? getExhibition(hereRoom.exhibitionId) : undefined;
+  const hereWorks = artworks.filter((w) => w.placement.type !== "storage" && w.placement.room === current);
+  const exits = current && hereRoom?.kind !== "passage" ? exitsFrom(current) : [];
 
   useEffect(() => {
     headingRef.current?.focus();
@@ -30,6 +34,36 @@ export function Directory({ onClose }: { onClose: () => void }) {
         Directory
       </h2>
       <p className="small soft">Go to any room or work. Movement is a gentle glide within a room and a fade between rooms.</p>
+      {hereRoom && (
+        <section className="m-room" aria-labelledby="m-here">
+          <h3 id="m-here" className="h4">
+            You are in {hereRoom.name}
+          </h3>
+          {hereEx && <p className="small soft" style={{ margin: 0 }}>{hereEx.title}</p>}
+          <p className="small" style={{ margin: "var(--space-2) 0 0" }}>
+            {hereWorks.length ? `${hereWorks.length} ${hereWorks.length === 1 ? "work" : "works"} here. ` : ""}Ways on from here:
+          </p>
+          <ul>
+            {exits.map((e) => (
+              <li key={e.room}>
+                <span>
+                  {roomById(e.room).name} <span className="soft">· {e.direction}</span>
+                </span>
+                <button
+                  type="button"
+                  className="m-link"
+                  onClick={() => {
+                    goTo(arrivalFor(e.room));
+                    onClose();
+                  }}
+                >
+                  Go<span className="visually-hidden"> to {roomById(e.room).name}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {rooms
         .filter((r) => r.kind !== "passage")
         .map((r) => {

@@ -112,6 +112,10 @@
   color: var(--ivory);
 }
 
+.m-btn__label--narrow {
+  display: none;
+}
+
 .m-btn kbd {
   font-family: var(--font-text-stack);
   font-size: 0.7rem;
@@ -139,6 +143,9 @@
   .m-btn kbd,
   .m-btn .m-btn__label--wide {
     display: none;
+  }
+  .m-btn .m-btn__label--narrow {
+    display: inline;
   }
 }
 

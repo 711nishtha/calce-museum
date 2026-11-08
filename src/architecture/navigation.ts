@@ -4,7 +4,7 @@
  */
 import type { Artwork, Facing, RoomId } from "@/content/types";
 import { artworkFootprint, buildCollider, isFree, type Collider } from "./collision";
-import { EYE_HEIGHT, roomAt } from "./floorplan";
+import { EYE_HEIGHT, openings, roomAt, roomById, roomCenter } from "./floorplan";
 
 export interface Viewpoint {
   position: [number, number, number];
@@ -68,4 +68,38 @@ export function viewpointFor(work: Artwork): Viewpoint | null {
     }
   }
   return null;
+}
+
+/** The four drum passages open straight onto the atrium (they are not listed as openings). */
+const drumLinks: [RoomId, RoomId][] = [
+  ["atrium", "passage-south"],
+  ["atrium", "passage-north"],
+  ["atrium", "passage-east"],
+  ["atrium", "passage-west"],
+];
+
+/**
+ * Rooms you can walk to directly from `room`, looking through passages, with a compass
+ * direction — used for accessible, room-by-room navigation.
+ */
+export function exitsFrom(room: RoomId): { room: RoomId; direction: string }[] {
+  const links = [...openings.map((o) => o.connects), ...drumLinks];
+  const next = (id: RoomId) => links.flatMap(([a, b]) => (a === id ? [b] : b === id ? [a] : [])).filter((r) => r !== id);
+  const out = new Set<RoomId>();
+  const seen = new Set<RoomId>([room]);
+  const queue = next(room);
+  while (queue.length) {
+    const r = queue.shift()!;
+    if (seen.has(r)) continue;
+    seen.add(r);
+    if (roomById(r).kind === "passage") queue.push(...next(r));
+    else out.add(r);
+  }
+  const [x0, z0] = roomCenter(roomById(room));
+  return [...out].map((r) => {
+    const [x, z] = roomCenter(roomById(r));
+    const angle = Math.atan2(x - x0, -(z - z0)); // 0 = north, clockwise
+    const dirs = ["north", "north-east", "east", "south-east", "south", "south-west", "west", "north-west"];
+    return { room: r, direction: dirs[(Math.round(angle / (Math.PI / 4)) + 8) % 8]! };
+  });
 }
