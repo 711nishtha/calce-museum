@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { roomById } from "@/architecture/floorplan";
 import { ArtworkImage } from "@/components/ui/ArtworkImage";
-import { BrandMark } from "@/components/ui/BrandMark";
 import { InlineSvg } from "@/components/ui/InlineSvg";
 import { HoursTable, OpeningStatus } from "@/components/site/OpeningStatus";
 import { artists } from "@/content/artists";
@@ -11,9 +10,11 @@ import { articles } from "@/content/journal";
 import { tourStops } from "@/content/tour";
 import { gettingHere, museum } from "@/content/visit";
 import { getArtist } from "@/content/artists";
-import { heroSvg } from "@/graphics/hero-svg";
 import { mapSvg } from "@/graphics/map-svg";
 import { formatDate, formatRange } from "@/lib/format";
+import { roomView } from "@/lib/views";
+
+const insideRooms = ["gallery-royal", "gallery-sculpture", "gallery-photography", "gallery-installation", "gallery-painting"] as const;
 
 const highlightIds = ["long-wall-cadiz", "net-memory-i", "olive-leaves-wind", "field-of-unspoken-lines", "window-alfama", "carafe-one", "seat-for-two-strangers"];
 
@@ -24,7 +25,7 @@ export default function HomePage() {
     <>
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero__art">
-          <InlineSvg svg={heroSvg()} />
+          <img src={roomView("forecourt")} alt="" width={1600} height={900} fetchPriority="high" />
         </div>
         <div className="hero__veil" aria-hidden="true" />
         <div className="container hero__content">
@@ -32,13 +33,13 @@ export default function HomePage() {
           <h1 id="hero-title" className="display hero__title">
             A salon for <span className="italic">slow</span> looking
           </h1>
-          <p className="lede hero__lede">Four exhibitions in a house of limestone, oak and daylight — in the building, or step by step in the 3D museum.</p>
+          <p className="lede hero__lede">Five galleries in a house of limestone, oak and daylight. Everything you see here is the museum itself, rendered in real time — walk straight in.</p>
           <div className="btn-row hero__actions">
-            <Link href="/tickets" className="btn btn--primary">
-              Book a timed entry
+            <Link href="/museum" className="btn btn--primary">
+              Walk in now — 3D
             </Link>
-            <Link href="/museum" className="btn">
-              Walk through in 3D
+            <Link href="/museum?tour=1" className="btn">
+              Take the guided tour
             </Link>
           </div>
           <div className="hero__status">
@@ -48,26 +49,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="intro-title">
-        <div className="container split">
-          <div>
-            <span className="eyebrow">The museum</span>
-            <BrandMark className="mt-4" />
-          </div>
-          <div>
-            <h2 id="intro-title" className="h2" style={{ maxWidth: "20ch" }}>
-              Built around a room with no art in it — only <span className="italic">light</span>, an olive tree and somewhere to sit.
-            </h2>
-            <div className="prose mt-6">
-              <p>
-                CALCE is a museum of contemporary art arranged around a day-lit atrium. Four galleries open from it like the points of a compass, each with its own exhibition and its own quality of light. The sculpture garden and Café Limone lie to the east; the shop to the west.
-              </p>
-              <p>Every work is given room. Every gallery has a bench. Every label ends with an invitation to look a little longer.</p>
+      <section className="section" aria-labelledby="inside-title">
+        <div className="container">
+          <div className="section__head">
+            <div>
+              <span className="eyebrow">Inside CALCE</span>
+              <h2 id="inside-title" className="h2">
+                Pick a room and step into it
+              </h2>
             </div>
-            <Link href="/journal/building-with-light" className="text-link">
-              Read about the architecture
-            </Link>
+            <p className="small soft" style={{ maxWidth: "40ch", margin: 0 }}>
+              Stills from the real-time museum, not illustrations. Each one opens the 3D museum standing exactly there.
+            </p>
           </div>
+          <ul className="views">
+            {insideRooms.map((id) => {
+              const room = roomById(id);
+              const ex = room.exhibitionId ? exhibitions.find((e) => e.id === room.exhibitionId) : undefined;
+              return (
+                <li key={id}>
+                  <Link href={`/museum?room=${id}`} className="view">
+                    <img src={roomView(id)} alt={`${room.name}, rendered in the 3D museum`} width={1600} height={900} loading="lazy" decoding="async" />
+                    <span className="view__caption">
+                      <span className="h4">{ex ? ex.title : room.name}</span>
+                      <span className="small">{room.name.split(" — ")[0]} · Walk in →</span>
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </section>
 

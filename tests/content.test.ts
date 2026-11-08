@@ -107,3 +107,15 @@ describe("reproductions", () => {
     }
   });
 });
+
+describe("3D renders on the website", () => {
+  it("ships an image for every room the website shows as a render", async () => {
+    const { existsSync } = await import("node:fs");
+    const { roomView } = await import("@/lib/views");
+    const { rooms } = await import("@/architecture/floorplan");
+    const shown = rooms.map((r) => roomView(r.id)).filter((v): v is string => !!v);
+    expect(shown.length).toBeGreaterThanOrEqual(6);
+    for (const v of shown) expect(existsSync(`public${v}`), v).toBe(true);
+    for (const e of exhibitions) expect(roomView(e.room), e.id).toBeDefined();
+  });
+});

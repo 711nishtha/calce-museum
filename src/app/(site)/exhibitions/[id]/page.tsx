@@ -10,6 +10,7 @@ import { artworksByExhibition } from "@/content/artworks";
 import { exhibitions, getExhibition } from "@/content/exhibitions";
 import { mapSvg } from "@/graphics/map-svg";
 import { formatDate, formatRange, mediumLabel } from "@/lib/format";
+import { roomView } from "@/lib/views";
 
 export const dynamicParams = false;
 
@@ -28,6 +29,7 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
   const works = artworksByExhibition(ex.id);
   const artistIds = [...new Set(works.map((w) => w.artistId))];
   const room = roomById(ex.room);
+  const view = roomView(ex.room);
 
   return (
     <div style={{ "--accent": ex.accent } as React.CSSProperties}>
@@ -60,6 +62,20 @@ export default async function ExhibitionPage({ params }: { params: Promise<{ id:
           </Link>
         </div>
       </PageHead>
+
+      {view && (
+        <section className="section section--tight" aria-label={`${room.name} in the 3D museum`}>
+          <div className="container">
+            <Link href={`/museum?room=${ex.room}`} className="view">
+              <img src={view} alt={`${room.name} as it appears in the 3D museum`} width={1600} height={900} />
+              <span className="view__caption">
+                <span className="h4">{room.name}</span>
+                <span className="small">Rendered in real time · Walk into this room →</span>
+              </span>
+            </Link>
+          </div>
+        </section>
+      )}
 
       <section className="section">
         <div className="container split split--wide-left">
