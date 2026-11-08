@@ -35,7 +35,7 @@ npm start              # http://localhost:3000
 Quality checks:
 
 ```bash
-npm run check          # TypeScript + ESLint + Vitest (38 tests)
+npm run check          # TypeScript + ESLint + Vitest (40 tests)
 ```
 
 ## Exploring the museum
@@ -49,6 +49,9 @@ npm run check          # TypeScript + ESLint + Vitest (38 tests)
   whole museum is navigable by keyboard and screen reader.
 - **Deep links**: `/museum?room=gallery-painting`, `/museum?work=meridian`, `/museum?tour=1`. Every
   artwork page on the website has "Find it in the 3D museum".
+- **Accessibility**: `H` opens help and comfort settings (reduce motion, lighter graphics); the Directory
+  starts with where you are and the ways on from there; room changes and the work in front of you are
+  announced to screen readers.
 - If WebGL is unavailable, the route explains why and links to the map, tour and collection instead.
 
 ## Website

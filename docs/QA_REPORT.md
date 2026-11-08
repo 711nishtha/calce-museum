@@ -119,3 +119,24 @@ follows a `?room=` deep link and logs no console errors.
   Gallery I and 31–38 fps in the Royal Salon.
 - Known limitation: on Balanced, a room you have not yet entered is lit only by daylight fill until you step
   into it (High quality lights every room at once).
+
+## Update — response to review
+
+- **Voice (B)**: each exhibition now has a distinct register — precarious and plain-spoken (sculpture), an
+  argument with the postcard Mediterranean (painting), technical chemistry and exposure data (photography),
+  candid about a divisive show (installations), and political (Royal Salon). Twelve look-closer prompts were
+  rewritten to challenge or play as well as invite. The journal adds a guest critic's "Against slow looking"
+  and a children's trail.
+- **Visual evidence (C)**: the homepage hero is a real render of the forecourt, and the primary call to action
+  is the 3D museum. A new "Inside CALCE" section shows renders of five galleries, each opening the museum at
+  that spot; every exhibition page leads with its gallery render. Renders were captured from the production
+  build at High quality with the interface hidden (`public/views/`, 36–142 KB WebP each).
+- **Booking (D)**: the tickets page states up front that booking is a demonstration (no payment, no email, not
+  valid for entry); the visit page's call to action reads "Try the booking demo".
+- **3D accessibility (E)**: help and comfort panel (`H`/`?`) listing every keyboard control; an in-museum
+  "Reduce motion" switch (defaults to the OS setting) that removes glides, sway, breathing and head bob;
+  "Lighter graphics" switch; the Directory opens with where you are and the ways on, with compass directions;
+  a live region announces each room (exhibition, number of works, exits) and the work you are facing.
+  Verified by keyboard only: forecourt → reception → atrium via exits, announcements read back correctly,
+  focus moves into each panel. A test proves every room is reachable room by room and links are symmetric.
+- Tests: 40/40.
